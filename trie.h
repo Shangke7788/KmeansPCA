@@ -39,8 +39,8 @@ class Trie {
 		/* *
 		 * 一般函数
 		 */
-		// 整体拷贝，创建新节点
-		Trie* copy() const;
+		// 整体拷贝复制，创建新节点
+		void copy(const Trie& o);
 
 		// 获取该单词的数目
 		int get_cnt() const;
@@ -48,8 +48,8 @@ class Trie {
 		// 获取该前缀的数目
 		int get_tot_cnt() const;
 
-		// 插入一个单词
-		void insert(char* s);
+		// 插入一个单词，返回单词词尾
+		char* insert(char* s);
 
 		// 查询某个单词的数目
 		int query(char* s) const;
@@ -57,11 +57,14 @@ class Trie {
 		// 获取某个前缀的数目
 		int query_pre(char* s) const;
 
-		// 删除某个单词
-		void remove(char* s);
+		// 删除某个单词，返回删除的数目
+		int remove(char* s);
 
 		// 获取所有的单词及其数目
 		vector< pair<int, string> > get_all() const;
+
+		// 将当前单词及其子孙插入到vector中
+		void get_dfs(int deep, vector< pair<int, string> >& ans) const;
 };
 
 #endif
