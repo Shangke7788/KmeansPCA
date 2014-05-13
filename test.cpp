@@ -26,7 +26,7 @@ template<typename T> void out(const Matrix<T>& mat) {
 int main() {
 	Files fs;
 	fs.clear();
-	fs.getFiles("..\\20_newsgroups");
+	fs.getFiles(DICNAME[0]);
 	for (int i = 0; i < (int)fs.size(); i++) {
 		cout << fs[i] << endl;
 	}
