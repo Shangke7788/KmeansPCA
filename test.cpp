@@ -1,7 +1,9 @@
 #include "matrix.h"
 #include "datapoint.h"
-#include "files.h"
 #include "trie.h"
+
+#include "files.h"
+#include "constant.h"
 
 #include <stdio.h>
 #include <iostream>
