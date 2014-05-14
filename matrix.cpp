@@ -416,7 +416,7 @@ template<typename T> Matrix<T> Matrix<T>::cov() const {
 			for (int k = 0; k < R; k++) {
 				ans[i][j] += cen[i][k] * cen[j][k];
 			}
-			ans[i][j] /= R - 1;
+			// ans[i][j] /= R - 1;
 		}
 	}
 	return ans;

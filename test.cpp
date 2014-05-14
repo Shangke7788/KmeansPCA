@@ -1,6 +1,7 @@
 #include "matrix.h"
 #include "datapoint.h"
 #include "trie.h"
+#include "kmeans.h"
 
 #include "files.h"
 #include "constant.h"
