@@ -6,6 +6,8 @@
 #include "files.h"
 #include "constant.h"
 
+#include "tfidf.h"
+
 #include <stdio.h>
 #include <iostream>
 #include <time.h>
@@ -27,12 +29,6 @@ template<typename T> void out(const Matrix<T>& mat) {
 }
 
 int main() {
-	Files fs;
-	fs.clear();
-	fs.getFiles(DICNAME[0]);
-	for (int i = 0; i < (int)fs.size(); i++) {
-		cout << fs[i] << endl;
-	}
-	cout << fs.size() << endl;
+	Trie *root = get_1000_words();
 	return 0;
 }
