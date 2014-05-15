@@ -16,7 +16,7 @@ Trie::Trie() {
 Trie::Trie(const Trie & o) {
 	cnt = o.cnt, tot_cnt = o.tot_cnt;
 	for (int i = 0; i < CHAR_SET_NUM; i++) {
-		next[i] = NULL;
+		next[i] = o.next[i];
 	}
 }
 
@@ -24,39 +24,40 @@ Trie::~Trie() {
 	for (int i = 0; i < CHAR_SET_NUM; i++) {
 		if (next[i]) {
 			delete next[i];
+			next[i] = NULL;
 		}
 	}
 }
 
 Trie Trie::operator + (const Trie& o) {
 	Trie ans;
-	ans.copy(*this), ans.copy(o);
+	ans.copy(this), ans.copy(&o);
 	return ans;
 }
 
 Trie& Trie::operator = (const Trie& o) {
 	cnt = o.cnt, tot_cnt = o.tot_cnt;
 	for (int i = 0; i < CHAR_SET_NUM; i++) {
-		next[i] = NULL;
+		next[i] = o.next[i];
 	}
 	return *this;
 }
 
 Trie& Trie::operator += (const Trie& o) {
-	this->copy(o);
+	this->copy(&o);
 	return *this;
 }
 
-void Trie::copy(const Trie& o) {
-	this->cnt += o.cnt;
-	this->tot_cnt += o.tot_cnt;
+void Trie::copy(const Trie* o) {
+	this->cnt += o->cnt;
+	this->tot_cnt += o->tot_cnt;
 	for (int i = 0; i < CHAR_SET_NUM; i++) {
-		if (o.next[i]) {
+		if (o->next[i]) {
 			if (this->next[i]) {
-				this->next[i]->copy(*o.next[i]);
+				this->next[i]->copy(o->next[i]);
 			} else {
 				this->next[i] = new Trie();
-				this->next[i]->copy(*o.next[i]);
+				this->next[i]->copy(o->next[i]);
 			}
 		}
 	}

@@ -5,11 +5,13 @@
 #include "files.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <vector>
 #include <string>
 #include <string.h>
 #include <algorithm>
-#include <time.h>
+#include <map>
+#include <math.h>
 
 using namespace std;
 
@@ -73,43 +75,149 @@ void insert_words(Trie* root, const char* filename) {
 	fclose(f);
 }
 
-Trie* get_1000_words() {
+Trie* get_words(const char* filename) {
+	static char s[1 << 10];
+	Trie* r = new Trie();
+	FILE *f;
+	f = fopen(filename, "r");
+	while (fscanf(f, "%s", s) != EOF) {
+		char *ss = s;
+		while (*ss) {
+			if ((*ss >= 'a' && *ss <= 'z') || (*ss >= 'A' && *ss <= 'Z')) {
+				if (r->query(ss)) {
+					while ((*ss >= 'a' && *ss <= 'z') || (*ss >= 'A' && *ss <= 'Z')) {
+						ss++;
+					}
+				} else {
+					ss = r->insert(ss);
+				}
+			} else {
+				ss++;
+			}
+		}
+	}
+	fclose(f);
+	return r;
+}
+
+void get_tfidf_files() {
 	static char s[1 << 10];
 	Files fs;
 	fs.getFiles(DICNAME[0]);
 	Trie* root = new Trie();
+
+	fprintf(stderr, "step #1: \nRead files starts... This will be take about 1 minute.\n");
 	for (int i = 0; i < (int)fs.size(); i++) {
 		insert_words(root, fs[i].c_str());
-		if ((i + 4) % 100 == 0) {
-			printf("%d ok!\n", i);
-		}
 	}
+	fprintf(stderr, "Read files ends.\n");
 	vector< pair<int, string> > allstring = root->get_all();
 	sort(allstring.begin(), allstring.end());
 	delete root;
-	root = new Trie();
-	int s2 = 110000;
-	srand(time(NULL));
-	freopen("out.txt", "w", stderr);
-	for (int i = 0; i < 1000; i++) {
-		int y = rand() % (allstring.size() - s2) + s2;
+
+	FILE * tf_all;
+	tf_all = fopen("tf_all.txt", "w");
+	fprintf(stderr, "step #2: \nWrite the tf_all.txt file starts...\n");
+	for (int i = 0; i < (int)allstring.size(); i++) {
+		int y = i;
 		strcpy(s, allstring[y].second.c_str());
-		if (root->query(s)) {
-			i--;
+		fprintf(tf_all, "%-20s %d\n", s, allstring[y].first);
+	}
+	fclose(tf_all);
+	fprintf(stderr, "Write the tf_all.txt file ends.\n");
+
+	root = new Trie();
+	fprintf(stderr, "step #3: \nRead files starts... This will be take about 1 minute.\n");
+	for (int i = 0; i < (int)fs.size(); i++) {
+		Trie* tmp = get_words(fs[i].c_str());
+		*root += *tmp;
+		delete tmp;
+	}
+	fprintf(stderr, "Read files ends.\n");
+	allstring = root->get_all();
+	sort(allstring.begin(), allstring.end());
+	delete root;
+
+	FILE * idf_all;
+	idf_all = fopen("idf_all.txt", "w");
+	fprintf(stderr, "step #4: \nWrite the idf_all.txt file starts...\n");
+	for (int i = 0; i < (int)allstring.size(); i++) {
+		strcpy(s, allstring[i].second.c_str());
+		fprintf(idf_all, "%-20s %d\n", s, allstring[i].first);
+	}
+	fclose(idf_all);
+	fprintf(stderr, "Write the idf_all.txt file ends.\n");
+
+	allstring.clear(), fs.clear();
+}
+
+Trie* get_1000_words() {
+	static char s[1 << 10];
+	Files fs;
+	fs.getFiles(DICNAME[0]);
+
+	FILE *tf_all, *idf_all, *tfidf_all;
+	tf_all = fopen("tf_all.txt", "r"), idf_all = fopen("idf_all.txt", "r");
+	if (tf_all == NULL || idf_all == NULL) {
+		get_tfidf_files();
+		tf_all = fopen("tf_all.txt", "r"), idf_all = fopen("idf_all.txt", "r");
+	}
+	fprintf(stderr, "tf_all.txt and idf_all.txt are all exists.\n");
+
+	vector< pair<double, string> > allstring;
+	map<string, int> mp;
+	mp.clear(), allstring.clear();
+
+	fprintf(stderr, "Read tf_all.txt starts...\n");
+	int tf_val;
+	while (fscanf(tf_all, "%s%d", s, &tf_val) != EOF) {
+		string tmp = s;
+		mp[tmp] = (int)allstring.size();
+		allstring.push_back(make_pair((double)tf_val, tmp));
+	}
+	fclose(tf_all);
+	fprintf(stderr, "Read tf_all.txt ends.\n");
+
+	fprintf(stderr, "Read idf_all.txt starts...\n");
+	int idf_val;
+	while (fscanf(idf_all, "%s%d", s, &idf_val) != EOF) {
+		string tmp = s;
+		int i = mp[tmp];
+		allstring[i].first *= log((double)fs.size() / (double)idf_val);
+		mp[tmp] = idf_val;
+	}
+	fclose(idf_all);
+	fprintf(stderr, "Read idf_all.txt ends.\n");
+
+	fprintf(stderr, "Write tfidf_all.txt starts...\n");
+	sort(allstring.begin(), allstring.end());
+	reverse(allstring.begin(), allstring.end());
+	tfidf_all = fopen("tfidf_all.txt", "w");
+	for (int i = 0; i < (int)allstring.size(); i++) {
+		strcpy(s, allstring[i].second.c_str());
+		fprintf(tfidf_all, "%-20s %.9lf\n", s, allstring[i].first);
+	}
+	fclose(tfidf_all);
+	fprintf(stderr, "Write tfidf_all.txt ends...\n");
+
+	fprintf(stderr, "Put 1000 words to Trie and create 1000words.txt...\n");
+	FILE * _1000words;
+	_1000words = fopen("1000words.txt", "w");
+	Trie* root = new Trie();
+	int num = 0;
+	for (int i = 0; i < (int)allstring.size(); i++) {
+		if (num >= 1000) {
+			break;
+		}
+		strcpy(s, allstring[i].second.c_str());
+		if (strlen(s) <= 2) {
 			continue;
 		}
 		root->insert(s);
-		fprintf(stderr, "%d %d %s\n", y, allstring[y].first, s);
+		fprintf(_1000words, "%-20s %.9lf %d\n", s, log((double)fs.size() / (double)mp[allstring[i].second]), mp[allstring[i].second]);
+		num++;
 	}
-	/*
-	for (int i = 0; i < 500; i++) {
-		strcpy(s, allstring[mid - i].second.c_str());
-		root->insert(s);
-		fprintf(stderr, "%s %d\n", s, allstring[i].first);
-		strcpy(s, allstring[mid + 1 + i].second.c_str());
-		root->insert(s);
-		fprintf(stderr, "%s %d\n", s, allstring[i].first);
-	}
-	*/
+	fclose(_1000words);
+	fprintf(stderr, "Now we have 1000 words and 1000words.txt.\n");
 	return root;
 }

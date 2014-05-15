@@ -40,7 +40,7 @@ class Trie {
 		 * 一般函数
 		 */
 		// 整体拷贝复制，创建新节点
-		void copy(const Trie& o);
+		void copy(const Trie* o);
 
 		// 获取该单词的数目
 		int get_cnt() const;

@@ -11,6 +11,10 @@ int document_word_num(const char* filename, char* word);
 
 void insert_words(Trie* root, const char* filename);
 
+Trie* get_words(const char* filename);
+
+void get_tfidf_files();
+
 Trie* get_1000_words();
 
 #endif
