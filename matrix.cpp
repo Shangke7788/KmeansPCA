@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <math.h>
 #include <map>
+#include <stdio.h>
 
 using namespace std;
 
@@ -409,12 +410,29 @@ Matrix Matrix::center() const {
 
 Matrix Matrix::cov() const {
 	Matrix cen = this->column_center();
+	Matrix c2 = cen.transpose();
 	Matrix ans = Matrix(this->column(), this->column());
-	int R = ans.row(), C = ans.column();
+	int R = cen.row(), C = ans.column();
 	for (int i = 0; i < C; i++) {
 		for (int j = 0; j < C; j++) {
 			for (int k = 0; k < R; k++) {
-				ans[i][j] += cen[i][k] * cen[j][k];
+				ans[i][j] += c2[i][k] * cen[k][j];
+			}
+			// ans[i][j] /= R - 1;
+		}
+	}
+	return ans;
+}
+
+Matrix Matrix::cov2() const {
+	Matrix cen = this->column_center();
+	Matrix c2 = cen.transpose();
+	Matrix ans = Matrix(this->row(), this->row());
+	int R = cen.column(), C = ans.column();
+	for (int i = 0; i < C; i++) {
+		for (int j = 0; j < C; j++) {
+			for (int k = 0; k < R; k++) {
+				ans[i][j] += cen[i][k] * c2[k][j];
 			}
 			// ans[i][j] /= R - 1;
 		}
@@ -851,4 +869,118 @@ void Matrix::rotate(Matrix& mat, int i, int j, bool& pass, Matrix& J) {
 	G[j][i] = Sin, G[j][j] = Cos;
 	mat = G.transpose() * mat * G;
 	J *= G;
+}
+
+int Matrix::svn(Matrix& S, Matrix& U, Matrix& V) const {
+	Matrix A = *this;
+	int R = this->row(), C = this->column();
+	bool hastran = false;
+	if (R > C) {
+		A = A.transpose(), hastran = true;
+		std::swap(R, C);
+	}
+	U = Matrix(R, R), V = Matrix(C), S = Matrix(R, C);
+
+	A.hestens_jacobi(V);
+
+	vector<double> E(C, 0.0);
+	int none_zero = 0;
+	for (int i = 0; i < C; i++) {
+		vector<double> s1 = A.get_column(i);
+		double norm = 0.0;
+		for (int j = 0; j < R; j++) {
+			norm += s1[j] * s1[j];
+		}
+		norm = sqrt(norm);
+		if (norm > EPS) {
+			none_zero++;
+		}
+		E[i] = norm;
+	}
+
+	/* *
+	 * U矩阵的后(R - none_zero)列以及V的后(C - none_zero)列就不计算了，采用默认值0
+	 * 对于奇异值分解A=U*Sigma*V^T，我们只需要U的前r列，V^T的前r行(即V的前r列)，就可以恢复A了。r是A的秩。
+	 */
+	for (int r = 0; r < R; r++) {
+		S[r][r] = E[r];
+		for (int c = 0; c < none_zero; c++) {
+			U[r][c] = A[r][c] / E[c];
+		}
+	}
+
+	if (hastran) {
+		S = S.transpose(), std::swap(U, V), U = U.transpose(), V = V.transpose();
+	}
+
+	return none_zero;
+}
+
+void Matrix::hestens_jacobi(Matrix& V) {
+	int R = this->row(), C = this->column();
+
+	int iteration = ITERATION;
+	while (iteration--) {
+		bool pass = true;
+		for (int i = 0; i < C; i++) {
+			for (int j = i + 1; j < C; j++) {
+				this->orthogonal(i, j, pass, V);
+			}
+		}
+		if (pass) {
+			break;
+		}
+	}
+}
+
+void Matrix::orthogonal(int i, int j, bool& pass, Matrix& V) {
+	int R = this->row(), C = this->column();
+	vector<double> ci = this->get_column(i);
+	vector<double> cj = this->get_column(j);
+	double ele = 0.0;
+	for (int r = 0; r < R; r++) {
+		ele += ci[r] * cj[r];
+	}
+	if (fabs(ele) < EPS) {
+		return;
+	}
+
+	pass = false;
+	double ele1 = 0.0;
+	double ele2 = 0.0;
+	for (int r = 0; r < R; r++) {
+		ele1 += ci[r] * ci[r];
+		ele2 += cj[r] * cj[r];
+	}
+
+	if (ele1 < ele2) {
+		for (int r = 0; r < R; r++) {
+			(*this)[r][i] = cj[r];
+			(*this)[r][j] = ci[r];
+		}
+		for (int r = 0; r < C; r++) {
+			double tmp = V[r][i];
+			V[r][i] = V[r][j];
+			V[r][j] = tmp;
+		}
+	}
+
+	double tao = (ele1 - ele2) / (2 * ele);
+	double Tan = sign_without0(tao) / (fabs(tao) + sqrt(1 + tao * tao));
+	double Cos = 1.0 / sqrt(1 + Tan * Tan);
+	double Sin = Cos * Tan;
+
+	for (int r = 0; r < R; r++) {
+		double var1 = (*this)[r][i] * Cos + (*this)[r][j] * Sin;
+		double var2 = (*this)[r][j] * Cos - (*this)[r][i] * Sin;
+		(*this)[r][i] = var1;
+		(*this)[r][j] = var2;
+	}
+
+	for (int c = 0; c < C; c++) {
+		double var1 = V[c][i] * Cos + V[c][j] * Sin;
+		double var2 = V[c][j] * Cos - V[c][i] * Sin;
+		V[c][i] = var1;
+		V[c][j] = var2;
+	}
 }

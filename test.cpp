@@ -18,6 +18,25 @@
 
 using namespace std;
 
+void out(const Matrix& mat) {
+	fprintf(stderr, "mat:\n");
+	int R = mat.row(), C = mat.column();
+	for (int i = 0; i < R; i++) {
+		for (int j = 0; j < C; j++) {
+			fprintf(stderr, "%.9lf%c", mat[i][j], " \n"[j == C - 1]);
+		}
+	}
+}
+
+/*
+double test[4][4] = {
+	0.685694,        -0.0392685,      1.27368,     0.516904,        
+-0.0392685,      0.188004,        -0.321713,       -0.117981,       
+1.27368,     -0.321713,       3.11318,     1.29639,     
+0.516904,        -0.117981,       1.29639,     0.582414        
+};
+*/
+
 map<string, double> words;
 char buffers[1 << 10];
 
@@ -50,7 +69,50 @@ extern "C" vector< DataPoint > get_datapoints(const char dic[][50], const int nu
 	return points;
 }
 
+extern "C" void gao(const char dic[][50], const int num[], int knum) {
+	Kmeans K;
+	for (int i = 0; i < 10; i++) {
+		fprintf(stderr, "Now selecting and read files... This will take about 1 minute.\n");
+		vector< DataPoint > a2 = get_datapoints(dic, num, knum);
+		fprintf(stderr, "Read files ends, start K-means... This will take about 5 seconds.\n");
+		K.K_Means(a2, knum, 20);
+		printf("Case #%d:\n", i + 1);
+		fprintf(stderr, "Case #%d:\n", i + 1);
+		printf("Km = %.9lf\n", K.JK);
+		fprintf(stderr, "Km = %.9lf\n", K.JK);
+		fprintf(stderr, "K-means ends, start svd... This will take about 1 second or 2 minutes.\n");
+		Matrix m2 = DataPoint::get_matrix(a2);
+		m2 = m2.column_center();
+		a2 = DataPoint::get_datapoints(m2);
+		double y = 0.0;
+		for (int i = 0; i < (int)a2.size(); i++) {
+			y += a2[i] * a2[i];
+		}
+		m2 = m2.cov2();
+		Matrix u, s, v;
+		m2.svn(s, u, v);
+		for (int i = 0; i < knum - 1; i++) {
+			y -= s[i][i];
+		}
+		printf("P2 = %.9lf\n", y);
+		fprintf(stderr, "P2 = %.9lf\n", y);
+		fprintf(stderr, "Now svd ends, start read files.\n");
+	}
+}
+
 int main() {
+	/*
+	Matrix aa = Matrix(4, 4);
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			aa[i][j] = test[i][j];
+		}
+	}
+	Matrix U, S, V;
+	aa.svn(S, U, V);
+	out(aa), out(S), out(U), out(V);
+	return 0;
+	*/
 	srand(time(NULL));
 	FILE * _1000words;
 	_1000words = fopen("1000words.txt", "r");
@@ -67,21 +129,12 @@ int main() {
 	}
 	fclose(_1000words);
 
-	Kmeans K;
-	int knum = 2;
-	for (int i = 0; i < 10; i++) {
-		fprintf(stderr, "Now selecting and read files... This will take about 1 minute.\n");
-		vector< DataPoint > a2 = get_datapoints(A2, BALANCE2, 2);
-		fprintf(stderr, "Read files ends, start K-means... This will take about 5 seconds.\n");
-		K.K_Means(a2, knum, 20);
-		printf("Case #%d:\n", i + 1);
-		printf("JK = %.9lf\n", K.JK);
-		fprintf(stderr, "K-means ends, start svd...\n");
-	//	Matrix m2 = DataPoint::get_matrix(a2);
-	//	m2 = m2.cov();
-	//	Matrix u, s, v;
-	//	m2.svd_jacobi(u, s, v);
-	}
+	gao(A2, BALANCE2, 2);
+	gao(B2, BALANCE2, 2);
+	gao(A5, BALANCE5, 5);
+	gao(A5, UNBALANCE5, 5);
+	gao(B5, BALANCE5, 5);
+	gao(B5, UNBALANCE5, 5);
 
 	return 0;
 }

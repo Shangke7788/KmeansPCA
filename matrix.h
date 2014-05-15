@@ -93,6 +93,9 @@ class Matrix: public vector< vector<double> > {
 		// 返回该矩阵的协方差矩阵
 		Matrix cov() const;
 
+		// 返回该矩阵的协方差矩阵，跑得太慢了。。。
+		Matrix cov2() const;
+
 		// 返回矩阵的逆矩阵
 		Matrix inverse() const;
 
@@ -101,6 +104,15 @@ class Matrix: public vector< vector<double> > {
 
 		// 使用双边jacobi旋转算法进行奇异值分解
 		void svd_jacobi(Matrix &U, Matrix& S, Matrix& V) const;
+
+		// 使用单边jacobi旋转算法进行奇异值分解，双边跑得太慢了。。。
+		int svn(Matrix& S, Matrix& U, Matrix& V) const;
+
+		// hestens_jacobi
+		void hestens_jacobi(Matrix& V);
+
+		// orthogonal
+		void orthogonal(int i, int j, bool& pass, Matrix& V);
 
 		/* *
 		 * 静态函数代码
