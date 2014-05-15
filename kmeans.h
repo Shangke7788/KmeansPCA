@@ -5,6 +5,10 @@
 #include <set>
 #include <vector>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 using namespace std;
 
 class Kmeans {
@@ -15,15 +19,19 @@ class Kmeans {
 
 	public:
 		int numSize, kSize, dimSize;
-		vector< DataPoint<double> > cluster[MAX_K];
+		vector< DataPoint > cluster[MAX_K];
 		vector< int > subscript[MAX_K];
-		vector< DataPoint<double> > means;
+		vector< DataPoint > means;
 		double minVal, JK;
 
-		int getLable(vector< DataPoint<double> >& means, DataPoint<double>& point);
-		double getVal(vector< DataPoint<double> >& means, vector< DataPoint<double> > cluster[]);
-		void getMeans(vector< DataPoint<double> >& means, vector< DataPoint<double> > cluster[]);
-		void K_Means(vector< DataPoint<double> >& points, int k, int Tim);
+		int getLable(vector< DataPoint >& means, DataPoint& point);
+		double getVal(vector< DataPoint >& means, vector< DataPoint > cluster[]);
+		void getMeans(vector< DataPoint >& means, vector< DataPoint > cluster[]);
+		void K_Means(vector< DataPoint >& points, int k, int Tim);
 };
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

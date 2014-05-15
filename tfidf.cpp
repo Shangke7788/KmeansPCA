@@ -33,7 +33,7 @@ int kmp(char* s, char* cmp) {
 	}
 	int i = 0, j = 0, res = 0;
 	while (s[i]) {
-		if (s[i] == cmp[j]) {
+		if (j == -1 || s[i] == cmp[j]) {
 			++i, ++j;
 			if (!cmp[j]) {
 				res++;
@@ -151,7 +151,7 @@ void get_tfidf_files() {
 	allstring.clear(), fs.clear();
 }
 
-Trie* get_1000_words() {
+void get_1000_words() {
 	static char s[1 << 10];
 	Files fs;
 	fs.getFiles(DICNAME[0]);
@@ -203,21 +203,21 @@ Trie* get_1000_words() {
 	fprintf(stderr, "Put 1000 words to Trie and create 1000words.txt...\n");
 	FILE * _1000words;
 	_1000words = fopen("1000words.txt", "w");
-	Trie* root = new Trie();
 	int num = 0;
 	for (int i = 0; i < (int)allstring.size(); i++) {
 		if (num >= 1000) {
 			break;
 		}
 		strcpy(s, allstring[i].second.c_str());
-		if (strlen(s) <= 2) {
+		if (strlen(s) <= 3) {
 			continue;
 		}
-		root->insert(s);
+		if (mp[allstring[i].second] >= 5000) {
+			continue;
+		}
 		fprintf(_1000words, "%-20s %.9lf %d\n", s, log((double)fs.size() / (double)mp[allstring[i].second]), mp[allstring[i].second]);
 		num++;
 	}
 	fclose(_1000words);
 	fprintf(stderr, "Now we have 1000 words and 1000words.txt.\n");
-	return root;
 }

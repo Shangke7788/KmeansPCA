@@ -1,6 +1,10 @@
 #ifndef _SHANGKE_CONSTANT_H_
 #define _SHANGKE_CONSTANT_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 const char DICNAME[21][50] = {
 	"..\\20_newsgroups",
 	"..\\20_newsgroups\\alt.atheism",
@@ -54,5 +58,9 @@ const char B5[5][50] = {
 const int BALANCE2[2] = { 100, 100 };
 const int BALANCE5[5] = { 100, 100, 100, 100, 100 };
 const int UNBALANCE5[5] = { 200, 140, 120, 100, 60 };
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

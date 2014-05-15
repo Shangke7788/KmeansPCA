@@ -3,6 +3,10 @@
 
 #include "trie.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 using namespace std;
 
 int kmp(char* s, char* cmp);
@@ -15,6 +19,10 @@ Trie* get_words(const char* filename);
 
 void get_tfidf_files();
 
-Trie* get_1000_words();
+void get_1000_words();
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

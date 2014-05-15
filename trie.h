@@ -4,6 +4,10 @@
 #include <vector>
 #include <string>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 using namespace std;
 
 class Trie {
@@ -66,5 +70,9 @@ class Trie {
 		// 将当前单词及其子孙插入到vector中
 		void get_dfs(int deep, vector< pair<int, string> >& ans) const;
 };
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -7,47 +7,47 @@
 
 using namespace std;
 
-template<typename T> bool Matrix<T>::isZero(const T x) {
+bool Matrix::isZero(const double x) {
 	double y = (double)x;
 	return ((y > EPS) - (y < -EPS)) == 0;
 }
 
-template<typename T> T Matrix<T>::sign(const T x) {
+double Matrix::sign(const double x) {
 	double y = (double)x;
-	return T((y > EPS) - (y < -EPS));
+	return double((y > EPS) - (y < -EPS));
 }
 
-template<typename T> T Matrix<T>::sign_without0(const T x) {
-	if (x < T(0)) {
-		return T(-1);
+double Matrix::sign_without0(const double x) {
+	if (x < double(0)) {
+		return double(-1);
 	} else {
-		return T(1);
+		return double(1);
 	}
 }
 
-template<typename T> Matrix<T>::Matrix(): vector< vector<T> >() {
+Matrix::Matrix(): vector< vector<double> >() {
 }
 
-template<typename T> Matrix<T>::Matrix(int row, int column): vector< vector<T> >(row, vector<T>(column, T(0))) {
+Matrix::Matrix(int row, int column): vector< vector<double> >(row, vector<double>(column, double(0))) {
 }
 
-template<typename T> Matrix<T>::Matrix(int row): vector< vector<T> >(row, vector<T>(row, T(0))) {
+Matrix::Matrix(int row): vector< vector<double> >(row, vector<double>(row, double(0))) {
 	for (int i = 0; i < row; i++) {
-		(*this)[i][i] = T(1);
+		(*this)[i][i] = double(1);
 	}
 }
 
-template<typename T> Matrix<T>::Matrix(int row, int column, T value): vector< vector<T> >(row, vector<T>(column, value)) {
+Matrix::Matrix(int row, int column, double value): vector< vector<double> >(row, vector<double>(column, value)) {
 }
 
-template<typename T> Matrix<T>::Matrix(const vector< vector<T> > &mat): vector< vector<T> >(mat) {
+Matrix::Matrix(const vector< vector<double> > &mat): vector< vector<double> >(mat) {
 }
 
-template<typename T> Matrix<T>::Matrix(const Matrix<T> &mat): vector< vector<T> >(mat) {
+Matrix::Matrix(const Matrix &mat): vector< vector<double> >(mat) {
 }
 
-template<typename T> Matrix<T> Matrix<T>::operator + (const Matrix<T> & o) {
-	Matrix<T> ans = Matrix(this->row(), this->column());
+Matrix Matrix::operator + (const Matrix & o) {
+	Matrix ans = Matrix(this->row(), this->column());
 	int R = ans.row(), C = ans.column();
 	for (int i = 0; i < R; i++) {
 		for (int j = 0; j < C; j++) {
@@ -57,8 +57,8 @@ template<typename T> Matrix<T> Matrix<T>::operator + (const Matrix<T> & o) {
 	return ans;
 }
 
-template<typename T> Matrix<T> Matrix<T>::operator - (const Matrix<T> & o) {
-	Matrix<T> ans = Matrix(this->row(), this->column());
+Matrix Matrix::operator - (const Matrix & o) {
+	Matrix ans = Matrix(this->row(), this->column());
 	int R = ans.row(), C = ans.column();
 	for (int i = 0; i < R; i++) {
 		for (int j = 0; j < C; j++) {
@@ -68,8 +68,8 @@ template<typename T> Matrix<T> Matrix<T>::operator - (const Matrix<T> & o) {
 	return ans;
 }
 
-template<typename T> Matrix<T> Matrix<T>::operator * (const Matrix<T> & o) {
-	Matrix<T> ans = Matrix(this->row(), o.column());
+Matrix Matrix::operator * (const Matrix & o) {
+	Matrix ans = Matrix(this->row(), o.column());
 	int R = ans.row(), M = this->column(), C = ans.column();
 	for (int i = 0; i < R; i++) {
 		for (int j = 0; j < C; j++) {
@@ -81,8 +81,8 @@ template<typename T> Matrix<T> Matrix<T>::operator * (const Matrix<T> & o) {
 	return ans;
 }
 
-template<typename T> Matrix<T> Matrix<T>::operator + (const T o) {
-	Matrix<T> ans = Matrix(this->row(), this->column());
+Matrix Matrix::operator + (const double o) {
+	Matrix ans = Matrix(this->row(), this->column());
 	int R = ans.row(), C = ans.column();
 	for (int i = 0; i < R; i++) {
 		for (int j = 0; j < C; j++) {
@@ -92,8 +92,8 @@ template<typename T> Matrix<T> Matrix<T>::operator + (const T o) {
 	return ans;
 }
 
-template<typename T> Matrix<T> Matrix<T>::operator - (const T o) {
-	Matrix<T> ans = Matrix(this->row(), this->column());
+Matrix Matrix::operator - (const double o) {
+	Matrix ans = Matrix(this->row(), this->column());
 	int R = ans.row(), C = ans.column();
 	for (int i = 0; i < R; i++) {
 		for (int j = 0; j < C; j++) {
@@ -103,8 +103,8 @@ template<typename T> Matrix<T> Matrix<T>::operator - (const T o) {
 	return ans;
 }
 
-template<typename T> Matrix<T> Matrix<T>::operator * (const T o) {
-	Matrix<T> ans = Matrix(this->row(), this->column());
+Matrix Matrix::operator * (const double o) {
+	Matrix ans = Matrix(this->row(), this->column());
 	int R = ans.row(), C = ans.column();
 	for (int i = 0; i < R; i++) {
 		for (int j = 0; j < C; j++) {
@@ -114,8 +114,8 @@ template<typename T> Matrix<T> Matrix<T>::operator * (const T o) {
 	return ans;
 }
 
-template<typename T> Matrix<T> Matrix<T>::operator / (const T o) {
-	Matrix<T> ans = Matrix(this->row(), this->column());
+Matrix Matrix::operator / (const double o) {
+	Matrix ans = Matrix(this->row(), this->column());
 	int R = ans.row(), C = ans.column();
 	for (int i = 0; i < R; i++) {
 		for (int j = 0; j < C; j++) {
@@ -125,7 +125,7 @@ template<typename T> Matrix<T> Matrix<T>::operator / (const T o) {
 	return ans;
 }
 
-template<typename T> Matrix<T>& Matrix<T>::operator = (const Matrix<T> & o) {
+Matrix& Matrix::operator = (const Matrix & o) {
 	if (this == &o) {
 		return *this;
 	}
@@ -135,13 +135,13 @@ template<typename T> Matrix<T>& Matrix<T>::operator = (const Matrix<T> & o) {
 	}
 	this->clear();
 	for (int i = 0; i < o.row(); i++) {
-		this->push_back(vector<T>(o[i]));
+		this->push_back(vector<double>(o[i]));
 	}
 	return *this;
 }
 
-template<typename T> Matrix<T>& Matrix<T>::operator += (const Matrix<T> & o) {
-	Matrix<T> ans = Matrix(this->row(), this->column());
+Matrix& Matrix::operator += (const Matrix & o) {
+	Matrix ans = Matrix(this->row(), this->column());
 	int R = ans.row(), C = ans.column();
 	for (int i = 0; i < R; i++) {
 		for (int j = 0; j < C; j++) {
@@ -151,8 +151,8 @@ template<typename T> Matrix<T>& Matrix<T>::operator += (const Matrix<T> & o) {
 	return (*this) = ans;
 }
 
-template<typename T> Matrix<T>& Matrix<T>::operator -= (const Matrix<T> & o) {
-	Matrix<T> ans = Matrix(this->row(), this->column());
+Matrix& Matrix::operator -= (const Matrix & o) {
+	Matrix ans = Matrix(this->row(), this->column());
 	int R = ans.row(), C = ans.column();
 	for (int i = 0; i < R; i++) {
 		for (int j = 0; j < C; j++) {
@@ -162,8 +162,8 @@ template<typename T> Matrix<T>& Matrix<T>::operator -= (const Matrix<T> & o) {
 	return (*this) = ans;
 }
 
-template<typename T> Matrix<T>& Matrix<T>::operator *= (const Matrix<T> & o) {
-	Matrix<T> ans = Matrix(this->row(), o.column());
+Matrix& Matrix::operator *= (const Matrix & o) {
+	Matrix ans = Matrix(this->row(), o.column());
 	int R = ans.row(), M = this->column(), C = ans.column();
 	for (int i = 0; i < R; i++) {
 		for (int j = 0; j < C; j++) {
@@ -175,8 +175,8 @@ template<typename T> Matrix<T>& Matrix<T>::operator *= (const Matrix<T> & o) {
 	return (*this) = ans;
 }
 
-template<typename T> Matrix<T>& Matrix<T>::operator += (const T o) {
-	Matrix<T> ans = Matrix(this->row(), this->column());
+Matrix& Matrix::operator += (const double o) {
+	Matrix ans = Matrix(this->row(), this->column());
 	int R = ans.row(), C = ans.column();
 	for (int i = 0; i < R; i++) {
 		for (int j = 0; j < C; j++) {
@@ -186,8 +186,8 @@ template<typename T> Matrix<T>& Matrix<T>::operator += (const T o) {
 	return (*this) = ans;
 }
 
-template<typename T> Matrix<T>& Matrix<T>::operator -= (const T o) {
-	Matrix<T> ans = Matrix(this->row(), this->column());
+Matrix& Matrix::operator -= (const double o) {
+	Matrix ans = Matrix(this->row(), this->column());
 	int R = ans.row(), C = ans.column();
 	for (int i = 0; i < R; i++) {
 		for (int j = 0; j < C; j++) {
@@ -197,8 +197,8 @@ template<typename T> Matrix<T>& Matrix<T>::operator -= (const T o) {
 	return (*this) = ans;
 }
 
-template<typename T> Matrix<T>& Matrix<T>::operator *= (const T o) {
-	Matrix<T> ans = Matrix(this->row(), this->column());
+Matrix& Matrix::operator *= (const double o) {
+	Matrix ans = Matrix(this->row(), this->column());
 	int R = ans.row(), C = ans.column();
 	for (int i = 0; i < R; i++) {
 		for (int j = 0; j < C; j++) {
@@ -208,8 +208,8 @@ template<typename T> Matrix<T>& Matrix<T>::operator *= (const T o) {
 	return (*this) = ans;
 }
 
-template<typename T> Matrix<T>& Matrix<T>::operator /= (const T o) {
-	Matrix<T> ans = Matrix(this->row(), this->column());
+Matrix& Matrix::operator /= (const double o) {
+	Matrix ans = Matrix(this->row(), this->column());
 	int R = ans.row(), C = ans.column();
 	for (int i = 0; i < R; i++) {
 		for (int j = 0; j < C; j++) {
@@ -219,11 +219,11 @@ template<typename T> Matrix<T>& Matrix<T>::operator /= (const T o) {
 	return (*this) = ans;
 }
 
-template<typename T> int Matrix<T>::row() const {
+int Matrix::row() const {
 	return (int)(this->size());
 }
 
-template<typename T> int Matrix<T>::column() const {
+int Matrix::column() const {
 	if (this->row() == 0) {
 		return 0;
 	} else {
@@ -231,29 +231,29 @@ template<typename T> int Matrix<T>::column() const {
 	}
 }
 
-template<typename T> T Matrix<T>::get_value() const {
+double Matrix::get_value() const {
 	int R = this->row(), C = this->column();
 	if (R != C || R == 0) {
-		return T(0);
+		return double(0);
 	}
-	Matrix<T> mat = *this;
-	T ans = T(1);
+	Matrix mat = *this;
+	double ans = double(1);
 	int n = R;
 	for (int i = 0; i < n; i++) {
 		for (int j = i + 1; j < n; j++) {
 			if (!isZero(mat[j][i])) {
-				T t = mat[i][i] / mat[j][i];
+				double t = mat[i][i] / mat[j][i];
 				for (int k = i; k < n; k++) {
 					mat[i][k] -= t * mat[j][k];
 				}
 				for (int k = i; k < n; k++) {
-					swap(mat[i][k], mat[j][k]);
+					std::swap(mat[i][k], mat[j][k]);
 				}
 				ans = -ans;
 			}
 		}
 		if (isZero(mat[i][i])) {
-			return T(0);
+			return double(0);
 		} else {
 			ans = ans * mat[i][i];
 		}
@@ -261,19 +261,19 @@ template<typename T> T Matrix<T>::get_value() const {
 	return ans;
 }
 
-template<typename T> int Matrix<T>::rank_det() const {
+int Matrix::rank_det() const {
 	Matrix mat = *this;
 	int d = 0, R = mat.row(), C = mat.column();
 	int ni = 0;
 	for (int i = 0; i < R; i++) {
 		for (int j = i + 1; j < R; j++) {
 			if (!isZero(mat[j][ni])) {
-				T t = mat[i][ni] / mat[j][ni];
+				double t = mat[i][ni] / mat[j][ni];
 				for (int k = ni; k < C; k++) {
 					mat[i][k] -= t * mat[j][k];
 				}
 				for (int k = ni; k < C; k++) {
-					swap(mat[i][k], mat[j][k]);
+					std::swap(mat[i][k], mat[j][k]);
 				}
 			}
 		}
@@ -288,27 +288,27 @@ template<typename T> int Matrix<T>::rank_det() const {
 	return d;
 }
 
-template<typename T> vector<T> Matrix<T>::get_row(int k) const {
+vector<double> Matrix::get_row(int k) const {
 	if (k >= this->row()) {
-		return vector<T>();
+		return vector<double>();
 	}
-	vector<T> ans = (*this)[k];
+	vector<double> ans = (*this)[k];
 	return ans;
 }
 
-template<typename T> vector<T> Matrix<T>::get_column(int k) const {
+vector<double> Matrix::get_column(int k) const {
 	if (k >= this->column()) {
-		return vector<T>();
+		return vector<double>();
 	}
 	int R = this->row();
-	vector<T> ans = vector<T>(R, T(0));
+	vector<double> ans = vector<double>(R, double(0));
 	for (int i = 0; i < R; i++) {
 		ans[i] = (*this)[i][k];
 	}
 	return ans;
 }
 
-template<typename T> void Matrix<T>::set_row(const vector<T>& o, int k) {
+void Matrix::set_row(const vector<double>& o, int k) {
 	if (k >= this->row()) {
 		return;
 	}
@@ -318,7 +318,7 @@ template<typename T> void Matrix<T>::set_row(const vector<T>& o, int k) {
 	}
 }
 
-template<typename T> void Matrix<T>::set_column(const vector<T>& o, int k) {
+void Matrix::set_column(const vector<double>& o, int k) {
 	if (k >= this->column()) {
 		return;
 	}
@@ -328,8 +328,8 @@ template<typename T> void Matrix<T>::set_column(const vector<T>& o, int k) {
 	}
 }
 
-template<typename T> Matrix<T> Matrix<T>::transpose() const {
-	Matrix<T> ans = Matrix(this->column(), this->row());
+Matrix Matrix::transpose() const {
+	Matrix ans = Matrix(this->column(), this->row());
 	int R = ans.row(), C = ans.column();
 	for (int i = 0; i < R; i++) {
 		for (int j = 0; j < C; j++) {
@@ -339,9 +339,9 @@ template<typename T> Matrix<T> Matrix<T>::transpose() const {
 	return ans;
 }
 
-template<typename T> Matrix<T> Matrix<T>::column_center() const {
-	Matrix<T> ans = Matrix<T>(this->row(), this->column());
-	vector<T> ave = vector<T>(this->column(), T(0));
+Matrix Matrix::column_center() const {
+	Matrix ans = Matrix(this->row(), this->column());
+	vector<double> ave = vector<double>(this->column(), double(0));
 	int R = this->row(), C = this->column();
 	for (int i = 0; i < R; i++) {
 		for (int j = 0; j < C; j++) {
@@ -359,9 +359,9 @@ template<typename T> Matrix<T> Matrix<T>::column_center() const {
 	return ans;
 }
 
-template<typename T> Matrix<T> Matrix<T>::row_center() const {
-	Matrix<T> ans = Matrix<T>(this->row(), this->column());
-	vector<T> ave = vector<T>(this->column(), T(0));
+Matrix Matrix::row_center() const {
+	Matrix ans = Matrix(this->row(), this->column());
+	vector<double> ave = vector<double>(this->column(), double(0));
 	int R = this->row(), C = this->column();
 	for (int i = 0; i < R; i++) {
 		for (int j = 0; j < C; j++) {
@@ -379,11 +379,11 @@ template<typename T> Matrix<T> Matrix<T>::row_center() const {
 	return ans;
 }
 
-template<typename T> Matrix<T> Matrix<T>::center() const {
-	Matrix<T> ans = Matrix<T>(this->row(), this->column());
-	vector<T> r_ave = vector<T>(this->column(), T(0));
-	vector<T> c_ave = vector<T>(this->row(), T(0));
-	T ave = T(0);
+Matrix Matrix::center() const {
+	Matrix ans = Matrix(this->row(), this->column());
+	vector<double> r_ave = vector<double>(this->column(), double(0));
+	vector<double> c_ave = vector<double>(this->row(), double(0));
+	double ave = double(0);
 	int R = ans.row(), C = ans.column();
 	for (int i = 0; i < R; i++) {
 		for (int j = 0; j < C; j++) {
@@ -407,9 +407,9 @@ template<typename T> Matrix<T> Matrix<T>::center() const {
 	return ans;
 }
 
-template<typename T> Matrix<T> Matrix<T>::cov() const {
-	Matrix<T> cen = this->column_center();
-	Matrix<T> ans = Matrix(this->column(), this->column());
+Matrix Matrix::cov() const {
+	Matrix cen = this->column_center();
+	Matrix ans = Matrix(this->column(), this->column());
 	int R = ans.row(), C = ans.column();
 	for (int i = 0; i < C; i++) {
 		for (int j = 0; j < C; j++) {
@@ -422,12 +422,12 @@ template<typename T> Matrix<T> Matrix<T>::cov() const {
 	return ans;
 }
 
-template<typename T> Matrix<T> Matrix<T>::inverse() const {
+Matrix Matrix::inverse() const {
 	int R = this->row(), C = this->column();
 	if (R != C || R == 0) {
-		return Matrix<T>();
+		return Matrix();
 	}
-	Matrix<T> mat = Matrix<T>(R, C + C);
+	Matrix mat = Matrix(R, C + C);
 	for (int i = 0; i < R; i++) {
 		for (int j = 0; j < C; j++) {
 			mat[i][j] = (*this)[i][j];
@@ -443,11 +443,11 @@ template<typename T> Matrix<T> Matrix<T>::inverse() const {
 			}
 		}
 		if (isZero(mat[s][i])) {
-			return Matrix<T>();
+			return Matrix();
 		}
-		T sav = mat[s][i];
+		double sav = mat[s][i];
 		for (int j = i; j < (C << 1); j++) {
-			swap(mat[i][j], mat[s][j]);
+			std::swap(mat[i][j], mat[s][j]);
 			mat[i][j] /= sav;
 		}
 		for (int j = i + 1; j < R; j++) {
@@ -459,13 +459,13 @@ template<typename T> Matrix<T> Matrix<T>::inverse() const {
 	}
 	for (int i = R - 1; i >= 0; i--) {
 		for (int j = i - 1; j >= 0; j--) {
-			T sav = -mat[j][i];
+			double sav = -mat[j][i];
 			for (int k = i; k < (C << 1); k++) {
 				mat[j][k] += sav * mat[i][k];
 			}
 		}
 	}
-	Matrix<T> ans = Matrix<T>(R, C);
+	Matrix ans = Matrix(R, C);
 	for (int i = 0; i < R; i++) {
 		for (int j = 0; j < C; j++) {
 			ans[i][j] = mat[i][j + C];
@@ -474,31 +474,31 @@ template<typename T> Matrix<T> Matrix<T>::inverse() const {
 	return ans;
 }
 
-template<typename T> void Matrix<T>::svd_qr(Matrix<T>& U, Matrix<T>& B, Matrix<T>& V) const {
+void Matrix::svd_qr(Matrix& U, Matrix& B, Matrix& V) const {
 	Matrix A = *this;
 	bool hastran = false;
 	int m = this->row(), n = this->column();
 	if (m < n) {
 		A = A.transpose();
 		hastran = true;
-		swap(m, n);
+		std::swap(m, n);
 	}
 	// 转化为 主对角线+副对角线 矩阵
-	vector<T> delta = vector<T>(n, T(0));
-	vector<T> gama = vector<T>(n, T(0));
-	U = Matrix<T>(m), V = Matrix<T>(n);
+	vector<double> delta = vector<double>(n, double(0));
+	vector<double> gama = vector<double>(n, double(0));
+	U = Matrix(m), V = Matrix(n);
 	for (int k = 0; k < n; k++) {
-		T cc = T(0);
+		double cc = double(0);
 		for (int i = 0; i < m - k; i++) {
 			cc += A[i][0] * A[i][0];
 		}
-		cc = (T)sqrt(double(cc));
+		cc = (double)sqrt(double(cc));
 		delta[k] = cc;
-		vector<T> v1 = A.get_column(0);
-		vector<T> e1 = vector<T>(m - k, T(0));
+		vector<double> v1 = A.get_column(0);
+		vector<double> e1 = vector<double>(m - k, double(0));
 		e1[0] = cc;
-		Matrix<T> P1 = householder(v1, e1);
-		Matrix<T> tmp = Matrix<T>(m - k, n - k - 1);
+		Matrix P1 = householder(v1, e1);
+		Matrix tmp = Matrix(m - k, n - k - 1);
 		int R = tmp.row(), C = tmp.column();
 		for (int i = 0; i < R; i++) {
 			for (int j = 0; j < C; j++) {
@@ -506,7 +506,7 @@ template<typename T> void Matrix<T>::svd_qr(Matrix<T>& U, Matrix<T>& B, Matrix<T
 			}
 		}
 		A = P1 * tmp;
-		tmp = Matrix<T>(m);
+		tmp = Matrix(m);
 		R = tmp.row(), C = tmp.column();
 		for (int i = k; i < R; i++) {
 			for (int j = k; j < C; j++) {
@@ -519,17 +519,17 @@ template<typename T> void Matrix<T>::svd_qr(Matrix<T>& U, Matrix<T>& B, Matrix<T
 			break;
 		}
 
-		cc = T(0);
+		cc = double(0);
 		for (int i = 0; i < n - k - 1; i++) {
 			cc += A[0][i] * A[0][i];
 		}
-		cc = (T)sqrt(double(cc));
+		cc = (double)sqrt(double(cc));
 		gama[k + 1] = cc;
-		vector<T> u1 = A.get_row(0);
-		e1 = vector<T>(n - k - 1, T(0));
+		vector<double> u1 = A.get_row(0);
+		e1 = vector<double>(n - k - 1, double(0));
 		e1[0] = cc;
-		Matrix<T> H1 = householder(u1, e1);
-		tmp = Matrix<T>(m - k - 1, n - k - 1);
+		Matrix H1 = householder(u1, e1);
+		tmp = Matrix(m - k - 1, n - k - 1);
 		R = tmp.row(), C = tmp.column();
 		for (int i = 0; i < R; i++) {
 			for (int j = 0; j < C; j++) {
@@ -538,7 +538,7 @@ template<typename T> void Matrix<T>::svd_qr(Matrix<T>& U, Matrix<T>& B, Matrix<T
 		}
 		A = tmp * H1;
 
-		tmp = Matrix<T>(n);
+		tmp = Matrix(n);
 		R = tmp.row(), C = tmp.column();
 		for (int i = k + 1; i < R; i++) {
 			for (int j = k + 1; j < C; j++) {
@@ -551,11 +551,11 @@ template<typename T> void Matrix<T>::svd_qr(Matrix<T>& U, Matrix<T>& B, Matrix<T
 	bool flag = true;
 	while (flag) {
 		flag = false;
-		gama[0] = T(0);
+		gama[0] = double(0);
 		int p = n - 1, q = 1;
 		for (int i = 1; i < n; i++) {
 			if (fabs(double(gama[i])) <= EPS * (fabs(double(delta[i - 1])) + fabs(double(delta[i])))) {
-				gama[i] = T(0);
+				gama[i] = double(0);
 			} else {
 				flag = true;
 				p = min(p, i), q = max(q, i);
@@ -565,16 +565,16 @@ template<typename T> void Matrix<T>::svd_qr(Matrix<T>& U, Matrix<T>& B, Matrix<T
 			break;
 		}
 		p--;
-		T max_val = T(0);
+		double max_val = double(0);
 		for (int i = 0; i < n; i++) {
-			max_val = max((T)fabs(double(delta[i])), max_val);
-			max_val = max((T)fabs(double(gama[i])), max_val);
+			max_val = max((double)fabs(double(delta[i])), max_val);
+			max_val = max((double)fabs(double(gama[i])), max_val);
 		}
 		bool has3 = false;
 		int l = 0, L = 0;
-		T x, y;
+		double x, y;
 		for (int i = p; i < q; i++) {
-			if ((T)fabs(double(delta[i])) <= max_val * (T)EPS) {
+			if ((double)fabs(double(delta[i])) <= max_val * (double)EPS) {
 				delta[i] = 0, x = gama[i + 1], y = delta[i + 1];
 				gama[i + 1] = 0, l = 1, L = i;
 				has3 = true;
@@ -583,10 +583,10 @@ template<typename T> void Matrix<T>::svd_qr(Matrix<T>& U, Matrix<T>& B, Matrix<T
 		}
 		if (has3) {
 			while (true) {
-				T c, s, r;
+				double c, s, r;
 				givens(y, x, c, s, r);
 				delta[L + l] = r;
-				Matrix<T> G = Matrix<T>(m);
+				Matrix G = Matrix(m);
 				G[L][L] = c, G[L][L + l] = -s;
 				G[L + l][L] = s, G[L + l][L + l] = c;
 				U = U * G;
@@ -600,9 +600,9 @@ template<typename T> void Matrix<T>::svd_qr(Matrix<T>& U, Matrix<T>& B, Matrix<T
 				}
 			}
 		} else {
-			Matrix<T> P, Q;
-			vector<T> d = vector<T>(q - p + 1, T(0));
-			vector<T> g = vector<T>(q - p + 1, T(0));
+			Matrix P, Q;
+			vector<double> d = vector<double>(q - p + 1, double(0));
+			vector<double> g = vector<double>(q - p + 1, double(0));
 			for (int i = p; i <= q; i++) {
 				d[i - p] = delta[i];
 				if (i != p) {
@@ -616,14 +616,14 @@ template<typename T> void Matrix<T>::svd_qr(Matrix<T>& U, Matrix<T>& B, Matrix<T
 					gama[i] = g[i - p];
 				}
 			}
-			Matrix<T> tmp = Matrix<T>(m);
+			Matrix tmp = Matrix(m);
 			for (int i = p; i <= q; i++) {
 				for (int j = p; j <= q; j++) {
 					tmp[i][j] = P[i - p][j - p];
 				}
 			}
 			U *= tmp;
-			tmp = Matrix<T>(n);
+			tmp = Matrix(n);
 			for (int i = p; i <= q; i++) {
 				for (int j = q; j <= q; j++) {
 					tmp[i][j] = Q[i - p][j - p];
@@ -633,7 +633,7 @@ template<typename T> void Matrix<T>::svd_qr(Matrix<T>& U, Matrix<T>& B, Matrix<T
 		}
 	}
 
-	B = Matrix<T>(m, n);
+	B = Matrix(m, n);
 	for (int i = 0; i < n; i++) {
 		B[i][i] = delta[i];
 		if (i == n - 1) {
@@ -642,35 +642,35 @@ template<typename T> void Matrix<T>::svd_qr(Matrix<T>& U, Matrix<T>& B, Matrix<T
 		B[i][i + 1] = gama[i + 1];
 	}
 	if (hastran) {
-		swap(U, V), U = U.transpose(), V = V.transpose(), B = B.transpose();
+		std::swap(U, V), U = U.transpose(), V = V.transpose(), B = B.transpose();
 	}
 }
 
-template<typename T> void Matrix<T>::svd_jacobi(Matrix<T>& U, Matrix<T>& S, Matrix<T>& V) const {
+void Matrix::svd_jacobi(Matrix& U, Matrix& S, Matrix& V) const {
 	Matrix A = *this;
 	bool hastran = false;
 	int R = this->row(), C = this->column();
 	if (R > C) {
 		A = A.transpose();
 		hastran = true;
-		swap(R, C);
+		std::swap(R, C);
 	}
-	U = Matrix<T>(R, R), V = Matrix<T>(C, C);
-	vector<T> E = vector<T>(C, 0);
+	U = Matrix(R, R), V = Matrix(C, C);
+	vector<double> E = vector<double>(C, 0);
 
-	Matrix<T> B = A.transpose() * A;
-	Matrix<T> J = Matrix<T>(C);
-	vector<T> ss = vector<T>(C, 0);
+	Matrix B = A.transpose() * A;
+	Matrix J = Matrix(C);
+	vector<double> ss = vector<double>(C, 0);
 	jacobi(B, C, ss, J);
 	for (int i = 0; i < (int)ss.size(); i++) {
-		ss[i] = (T)sqrt(double(ss[i]));
+		ss[i] = (double)sqrt(double(ss[i]));
 	}
 
-	multimap<T, int> eigen;
+	multimap<double, int> eigen;
 	for (int i = 0; i < (int)ss.size(); i++) {
 		eigen.insert(make_pair(ss[i], i));
 	}
-	typename multimap<T, int>::iterator iter = --eigen.end();
+	typename multimap<double, int>::iterator iter = --eigen.end();
 	int num_eig = 0;
 	for (int i = 0; i < C; i++, iter--) {
 		int index = iter->second;
@@ -683,9 +683,9 @@ template<typename T> void Matrix<T>::svd_jacobi(Matrix<T>& U, Matrix<T>& S, Matr
 		}
 	}
 	for (int i = 0; i < num_eig; i++) {
-		Matrix<T> vi = vector< vector<T> >(1, V.get_column(i));
-		T sigma = E[i];
-		Matrix<T> ui = A * vi.transpose();
+		Matrix vi = vector< vector<double> >(1, V.get_column(i));
+		double sigma = E[i];
+		Matrix ui = A * vi.transpose();
 		for (int j = 0; j < R; j++) {
 			U[j][i] = ui[j][0] / sigma;
 		}
@@ -693,88 +693,88 @@ template<typename T> void Matrix<T>::svd_jacobi(Matrix<T>& U, Matrix<T>& S, Matr
 
 	//U矩阵的后(rows-none_zero)列就不计算了，采用默认值0。因为这后几列对应的奇异值为0,在做数据压缩时用不到这几列
 
-	S = Matrix<T>(R, C);
+	S = Matrix(R, C);
 	for (int i = 0; i < R; i++) {
 		S[i][i] = E[i];
 	}
 	if (hastran) {
-		S = S.transpose(), swap(U, V), U = U.transpose(), V = V.transpose();
+		S = S.transpose(), std::swap(U, V), U = U.transpose(), V = V.transpose();
 	}
 }
 
-template<typename T> Matrix<T> Matrix<T>::householder(const vector<T> &x, const vector<T> &y) {
+Matrix Matrix::householder(const vector<double> &x, const vector<double> &y) {
 	int n = x.size();
 	if (n == 0) {
-		return Matrix<T>();
+		return Matrix();
 	}
-	T C = T(0);
+	double C = double(0);
 	for (int i = 0; i < n; i++) {
 		C += (x[i] - y[i]) * (x[i] - y[i]);
 	}
-	C = (T)sqrt(double(C));
-	Matrix<T> H = Matrix<T>(n);
+	C = (double)sqrt(double(C));
+	Matrix H = Matrix(n);
 	if (isZero(C)) {
 		return H;
 	}
-	Matrix<T> B = Matrix<T>(n, 1);
+	Matrix B = Matrix(n, 1);
 	for (int i = 0; i < n; i++) {
 		B[i][0] = (x[i] - y[i]) / C;
 	}
-	Matrix<T> BT = B.transpose();
-	H -= B * BT * T(2);
+	Matrix BT = B.transpose();
+	H -= B * BT * double(2);
 	return H;
 }
 
-template<typename T> void Matrix<T>::givens(const T x, const T y, T& c, T& s, T& r) {
+void Matrix::givens(const double x, const double y, double& c, double& s, double& r) {
 	if (isZero(y)) {
-		c = T(1), s = T(0), r = T(0);
+		c = double(1), s = double(0), r = double(0);
 	} else if (fabs(double(y)) > fabs(double(x))) {
-		T t = -x / y;
-		s = (T)sqrt(double(T(1) + t * t));
+		double t = -x / y;
+		s = (double)sqrt(double(double(1) + t * t));
 		r = -y * s;
-		s = T(1) / s;
+		s = double(1) / s;
 		c = s * t;
 	} else {
-		T t = -y / x;
-		c = (T)sqrt(double(T(1) + t * t));
+		double t = -y / x;
+		c = (double)sqrt(double(double(1) + t * t));
 		r = x * c;
-		c = T(1) / c;
+		c = double(1) / c;
 		s = c * t;
 	}
 }
 
-template<typename T> void Matrix<T>::update(const T c, const T s, vector<T>& v1, vector<T> &v2) {
+void Matrix::update(const double c, const double s, vector<double>& v1, vector<double> &v2) {
 	int n = v1.size();
 	for (int i = 0; i < n; i++) {
-		T t = v1[i];
+		double t = v1[i];
 		v1[i] = c * t - s * v2[i];
 		v2[i] = s * t + c * v2[i];
 	}
 }
 
-template<typename T> void Matrix<T>::qr(vector<T>& delta, vector<T>& gama, Matrix<T>& P, Matrix<T>& Q) {
+void Matrix::qr(vector<double>& delta, vector<double>& gama, Matrix& P, Matrix& Q) {
 	int n = delta.size();
-	T d = ((delta[n - 2] * delta[n - 2] + gama[n - 2] * gama[n - 2]) - 
-			delta[n - 1] * delta[n - 1] + gama[n - 1] * gama[n - 1]) / T(2);
-	T mu = (delta[n - 1] * delta[n - 1] + gama[n - 1] * gama[n - 1]) + d - sign(d)
-		* (T)sqrt(double(d * d + delta[n - 2] * delta[n - 2] *gama[n - 1] * gama[n - 1]));
-	T x = delta[0] * delta[0] - mu, y = delta[0] * gama[1], k = 0;
-	Q = Matrix<T>(n), P = Matrix<T>(n);
+	double d = ((delta[n - 2] * delta[n - 2] + gama[n - 2] * gama[n - 2]) - 
+			delta[n - 1] * delta[n - 1] + gama[n - 1] * gama[n - 1]) / double(2);
+	double mu = (delta[n - 1] * delta[n - 1] + gama[n - 1] * gama[n - 1]) + d - sign(d)
+		* (double)sqrt(double(d * d + delta[n - 2] * delta[n - 2] *gama[n - 1] * gama[n - 1]));
+	double x = delta[0] * delta[0] - mu, y = delta[0] * gama[1], k = 0;
+	Q = Matrix(n), P = Matrix(n);
 	while (true) {
-		T c, s, r;
+		double c, s, r;
 		givens(x, y, c, s, r);
-		Matrix<T> cs = Matrix<T>(2, 2);
+		Matrix cs = Matrix(2, 2);
 		cs[0][0] = c, cs[0][1] = s;
 		cs[1][0] = -s, cs[1][1] = c;
-		Matrix<T> tmp = Matrix<T>(2, 2);
+		Matrix tmp = Matrix(2, 2);
 		tmp[0][0] = delta[k], tmp[0][1] = gama[k + 1];
 		tmp[1][0] = 0, tmp[1][1] = delta[k + 1];
 		tmp *= cs;
 		x = tmp[0][0], gama[k + 1] = tmp[0][1];
 		y = tmp[1][0], delta[k + 1] = tmp[1][1];
 
-		vector<T> k0 = Q.get_column(k);
-		vector<T> k1 = Q.get_column(k + 1);
+		vector<double> k0 = Q.get_column(k);
+		vector<double> k1 = Q.get_column(k + 1);
 		update(c, s, k0, k1);
 		Q.set_column(k0, k);
 		Q.set_column(k1, k + 1);
@@ -792,10 +792,10 @@ template<typename T> void Matrix<T>::qr(vector<T>& delta, vector<T>& gama, Matri
 		P.set_column(k1, k + 1);
 
 		if (k < n - 2) {
-			tmp = Matrix<T>(2, 2);
-			tmp[0][0] = gama[k + 1], tmp[0][1] = T(0);
+			tmp = Matrix(2, 2);
+			tmp[0][0] = gama[k + 1], tmp[0][1] = double(0);
 			tmp[1][0] = delta[k + 1], tmp[1][1] = gama[k + 2];
-			cs = Matrix<T>(2, 2);
+			cs = Matrix(2, 2);
 			cs[0][0] = c, cs[0][1] = s;
 			cs[1][0] = -s, cs[1][1] = c;
 			tmp = cs.transpose() * tmp;
@@ -803,9 +803,9 @@ template<typename T> void Matrix<T>::qr(vector<T>& delta, vector<T>& gama, Matri
 			delta[k + 1] = tmp[1][0], gama[k + 2] = tmp[1][1];
 			k = k + 1;
 		} else {
-			tmp = Matrix<T>(2, 1);
+			tmp = Matrix(2, 1);
 			tmp[0][0] = gama[n - 1], tmp[1][0] = delta[n - 1];
-			cs = Matrix<T>(2, 2);
+			cs = Matrix(2, 2);
 			cs[0][0] = c, cs[0][1] = s;
 			cs[1][0] = -s, cs[1][1] = c;
 			tmp = cs.transpose() * tmp;
@@ -814,7 +814,7 @@ template<typename T> void Matrix<T>::qr(vector<T>& delta, vector<T>& gama, Matri
 	}
 }
 
-template<typename T> void Matrix<T>::jacobi(Matrix<T>& mat, int size, vector<T>& E, Matrix<T>& J) {
+void Matrix::jacobi(Matrix& mat, int size, vector<double>& E, Matrix& J) {
 	int iteration = ITERATION;
 	while (iteration--) {
 		bool pass = true;
@@ -833,20 +833,20 @@ template<typename T> void Matrix<T>::jacobi(Matrix<T>& mat, int size, vector<T>&
 	}
 }
 
-template<typename T> void Matrix<T>::rotate(Matrix<T>& mat, int i, int j, bool& pass, Matrix<T>& J) {
-	T ele = mat[i][j];
+void Matrix::rotate(Matrix& mat, int i, int j, bool& pass, Matrix& J) {
+	double ele = mat[i][j];
 	if (fabs(double(ele)) < EPS) {
 		return;
 	}
 	pass = false;
-	T ele1 = mat[i][i];
-	T ele2 = mat[j][j];
+	double ele1 = mat[i][i];
+	double ele2 = mat[j][j];
 	int size = mat.row();
-	T tao = (ele1 - ele2) / (ele * T(2));
-	T Tan = sign_without0(tao) / ((T)fabs(double(tao)) + (T)sqrt(double(T(1) + tao * tao)));
-	T Cos = T(1) / (T)sqrt(double(T(1) + Tan * Tan));
-	T Sin = Cos * Tan;
-	Matrix<T> G = Matrix<T>(size);
+	double tao = (ele1 - ele2) / (ele * double(2));
+	double Tan = sign_without0(tao) / ((double)fabs(double(tao)) + (double)sqrt(double(double(1) + tao * tao)));
+	double Cos = double(1) / (double)sqrt(double(double(1) + Tan * Tan));
+	double Sin = Cos * Tan;
+	Matrix G = Matrix(size);
 	G[i][i] = Cos, G[i][j] = -Sin;
 	G[j][i] = Sin, G[j][j] = Cos;
 	mat = G.transpose() * mat * G;

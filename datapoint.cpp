@@ -7,85 +7,85 @@
 
 using namespace std;
 
-template<typename T> DataPoint<T>::DataPoint(): vector<T>() {
+DataPoint::DataPoint(): vector<double>() {
 }
 
-template<typename T> DataPoint<T>::DataPoint(int dim): vector<T>(dim, T(0)) {
+DataPoint::DataPoint(int dim): vector<double>(dim, double(0)) {
 }
 
-template<typename T> DataPoint<T>::DataPoint(int dim, T value): vector<T>(dim, value) {
+DataPoint::DataPoint(int dim, double value): vector<double>(dim, value) {
 }
 
-template<typename T> DataPoint<T>::DataPoint(const DataPoint<T> & o): vector<T>(o) {
+DataPoint::DataPoint(const DataPoint & o): vector<double>(o) {
 }
 
-template<typename T> DataPoint<T>::DataPoint(const vector<T> & o): vector<T>(o) {
+DataPoint::DataPoint(const vector<double> & o): vector<double>(o) {
 }
 
-template<typename T> DataPoint<T> DataPoint<T>::operator + (const DataPoint<T>& o) {
+DataPoint DataPoint::operator + (const DataPoint& o) {
 	int D = this->dim();
-	DataPoint<T> ans = DataPoint<T>(D);
+	DataPoint ans = DataPoint(D);
 	for (int i = 0; i < D; i++) {
 		ans[i] = (*this)[i] + o[i];
 	}
 	return ans;
 }
 
-template<typename T> DataPoint<T> DataPoint<T>::operator - (const DataPoint<T>& o) {
+DataPoint DataPoint::operator - (const DataPoint& o) {
 	int D = this->dim();
-	DataPoint<T> ans = DataPoint<T>(D);
+	DataPoint ans = DataPoint(D);
 	for (int i = 0; i < D; i++) {
 		ans[i] = (*this)[i] - o[i];
 	}
 	return ans;
 }
 
-template<typename T> T DataPoint<T>::operator * (const DataPoint<T>& o) {
+double DataPoint::operator * (const DataPoint& o) {
 	int D = this->dim();
-	T ans = T(0);
+	double ans = double(0);
 	for (int i = 0; i < D; i++) {
 		ans += (*this)[i] * o[i];
 	}
 	return ans;
 }
 
-template<typename T> DataPoint<T> DataPoint<T>::operator + (const T o) {
+DataPoint DataPoint::operator + (const double o) {
 	int D = this->dim();
-	DataPoint<T> ans = DataPoint<T>(D);
+	DataPoint ans = DataPoint(D);
 	for (int i = 0; i < D; i++) {
 		ans[i] = (*this)[i] + o;
 	}
 	return ans;
 }
 
-template<typename T> DataPoint<T> DataPoint<T>::operator - (const T o) {
+DataPoint DataPoint::operator - (const double o) {
 	int D = this->dim();
-	DataPoint<T> ans = DataPoint<T>(D);
+	DataPoint ans = DataPoint(D);
 	for (int i = 0; i < D; i++) {
 		ans[i] = (*this)[i] - o;
 	}
 	return ans;
 }
 
-template<typename T> DataPoint<T> DataPoint<T>::operator * (const T o) {
+DataPoint DataPoint::operator * (const double o) {
 	int D = this->dim();
-	DataPoint<T> ans = DataPoint<T>(D);
+	DataPoint ans = DataPoint(D);
 	for (int i = 0; i < D; i++) {
 		ans[i] = (*this)[i] * o;
 	}
 	return ans;
 }
 
-template<typename T> DataPoint<T> DataPoint<T>::operator / (const T o) {
+DataPoint DataPoint::operator / (const double o) {
 	int D = this->dim();
-	DataPoint<T> ans = DataPoint<T>(D);
+	DataPoint ans = DataPoint(D);
 	for (int i = 0; i < D; i++) {
 		ans[i] = (*this)[i] / o;
 	}
 	return ans;
 }
 
-template<typename T> DataPoint<T>& DataPoint<T>::operator = (const DataPoint<T>& o) {
+DataPoint& DataPoint::operator = (const DataPoint& o) {
 	this->clear();
 	int D = o.dim();
 	for (int i = 0; i < D; i++) {
@@ -94,79 +94,113 @@ template<typename T> DataPoint<T>& DataPoint<T>::operator = (const DataPoint<T>&
 	return *this;
 }
 
-template<typename T> DataPoint<T>& DataPoint<T>::operator += (const DataPoint<T>& o) {
+DataPoint& DataPoint::operator += (const DataPoint& o) {
 	return *this = *this + o;
 }
 
-template<typename T> DataPoint<T>& DataPoint<T>::operator -= (const DataPoint<T>& o) {
+DataPoint& DataPoint::operator -= (const DataPoint& o) {
 	return *this = *this - o;
 }
 
-template<typename T> DataPoint<T>& DataPoint<T>::operator += (const T o) {
+DataPoint& DataPoint::operator += (const double o) {
 	return *this = *this + o;
 }
 
-template<typename T> DataPoint<T>& DataPoint<T>::operator -= (const T o) {
+DataPoint& DataPoint::operator -= (const double o) {
 	return *this = *this - o;
 }
 
-template<typename T> DataPoint<T>& DataPoint<T>::operator *= (const T o) {
+DataPoint& DataPoint::operator *= (const double o) {
 	return *this = (*this) * o;
 }
 
-template<typename T> DataPoint<T>& DataPoint<T>::operator /= (const T o) {
+DataPoint& DataPoint::operator /= (const double o) {
 	return *this = (*this) / o;
 }
 
-template<typename T> int DataPoint<T>::dim() const {
+int DataPoint::dim() const {
 	return int(this->size());
 }
 
-template<typename T> T DataPoint<T>::form1() const {
-	T ans = T(0);
+double DataPoint::form1() const {
+	double ans = double(0);
 	int D = this->dim();
 	for (int i = 0; i < D; i++) {
-		ans += (T)fabs(double((*this)[i]));
+		ans += (double)fabs(double((*this)[i]));
 	}
 	return ans;
 }
 
-template<typename T> T DataPoint<T>::form2() const {
-	return (T)sqrt(double((*this) * (*this)));
+double DataPoint::form2() const {
+	int D = this->dim();
+	double ans = 0.0;
+	for (int i = 0; i < D; i++) {
+		ans += (*this)[i] * (*this)[i];
+	}
+	return (double)sqrt(ans);
 }
 
-template<typename T> T DataPoint<T>::forminf() const {
-	T ans = T(0);
+double DataPoint::forminf() const {
+	double ans = double(0);
 	int D = this->dim();
 	for (int i = 0; i < D; i++) {
-		ans = max(ans, (T)fabs(double((*this)[i])));
+		ans = max(ans, (double)fabs(double((*this)[i])));
 	}
 	return ans;
 }
 
-template<typename T> T DataPoint<T>::dis(const DataPoint<T>& o) const {
-	return (T)sqrt(double((*this) * o));
+double DataPoint::dis(const DataPoint& o) const {
+	int D = this->dim();
+	double ans = 0.0;
+	for (int i = 0; i < D; i++) {
+		ans += ((*this)[i] - o[i]) * ((*this)[i] - o[i]);
+	}
+	return (double)sqrt(ans);
 }
 
-template<typename T> DataPoint<T> DataPoint<T>::get_mean(const vector< DataPoint<T> >& o) {
-	int N = o->size();
+void DataPoint::normalize() {
+	double f = form2();
+	int n = this->size();
+	for (int i = 0; i < n; i++) {
+		(*this)[i] /= f;
+	}
+}
+
+DataPoint DataPoint::get_mean(const vector< DataPoint >& o) {
+	int N = (int)o.size();
 	if (N == 0) {
-		return DataPoint<T>();
+		return DataPoint();
 	}
-	int D = o[0]->dim();
-	DataPoint<T> ans = DataPoint<T>(D);
+	int D = o[0].dim();
+	DataPoint ans = DataPoint(D);
 	for (int i = 0; i < N; i++) {
 		ans += o[i];
 	}
 	return ans;
 }
 
-template<typename T> Matrix<T> DataPoint<T>::get_matrix(const vector< DataPoint<T> >& o) {
-	vector< vector<T> > ans = o;
-	return Matrix<T>(ans);
+Matrix DataPoint::get_matrix(const vector< DataPoint >& o) {
+	vector< vector<double> > ans;
+	vector<double> tmp;
+	for (int i = 0; i < (int)o.size(); i++) {
+		tmp.clear();
+		for (int j = 0; j < o[0].dim(); j++) {
+			tmp.push_back(o[i][j]);
+		}
+		ans.push_back(tmp);
+	}
+	return Matrix(ans);
 }
 
-template<typename T> vector< DataPoint<T> > DataPoint<T>::get_datapoints(const Matrix<T>& o) {
-	vector< vector<T> > ans = o;
-	return vector< DataPoint<T> >(o);
+vector< DataPoint > DataPoint::get_datapoints(const Matrix& o) {
+	vector< DataPoint > ans;
+	DataPoint tmp;
+	for (int i = 0; i < o.row(); i++) {
+		tmp.clear();
+		for (int j = 0; j < o.column(); j++) {
+			tmp.push_back(o[i][j]);
+		}
+		ans.push_back(tmp);
+	}
+	return ans;
 }
