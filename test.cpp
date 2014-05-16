@@ -28,15 +28,6 @@ void out(const Matrix& mat) {
 	}
 }
 
-/*
-double test[4][4] = {
-	0.685694,        -0.0392685,      1.27368,     0.516904,        
--0.0392685,      0.188004,        -0.321713,       -0.117981,       
-1.27368,     -0.321713,       3.11318,     1.29639,     
-0.516904,        -0.117981,       1.29639,     0.582414        
-};
-*/
-
 map<string, double> words;
 char buffers[1 << 10];
 
@@ -71,7 +62,8 @@ extern "C" vector< DataPoint > get_datapoints(const char dic[][50], const int nu
 
 extern "C" void gao(const char dic[][50], const int num[], int knum) {
 	Kmeans K;
-	for (int i = 0; i < 10; i++) {
+	//for (int i = 0; i < CNT; i++) {
+	for (int i = 0; i < 1; i++) {
 		fprintf(stderr, "Now selecting and read files... This will take about 1 minute.\n");
 		vector< DataPoint > a2 = get_datapoints(dic, num, knum);
 		fprintf(stderr, "Read files ends, start K-means... This will take about 5 seconds.\n");
@@ -85,23 +77,67 @@ extern "C" void gao(const char dic[][50], const int num[], int knum) {
 		m2 = m2.column_center();
 		a2 = DataPoint::get_datapoints(m2);
 		double y = 0.0;
-		for (int i = 0; i < (int)a2.size(); i++) {
-			y += a2[i] * a2[i];
+		for (int j = 0; j < (int)a2.size(); j++) {
+			y += a2[j] * a2[j];
 		}
 		m2 = m2.cov2();
 		Matrix u, s, v;
 		m2.svn(s, u, v);
-		for (int i = 0; i < knum - 1; i++) {
-			y -= s[i][i];
+		for (int j = 0; j < knum - 1; j++) {
+			y -= s[j][j];
 		}
 		printf("P2 = %.9lf\n", y);
 		fprintf(stderr, "P2 = %.9lf\n", y);
-		fprintf(stderr, "Now svd ends, start read files.\n");
+		fprintf(stderr, "Now svd ends, start output the matrix with stdout.\n");
+		Matrix q = Matrix((int)a2.size(), knum);
+		for (int r = 0; r < q.row(); r++) {
+			for (int c = 0; c < knum - 1; c++) {
+				q[r][c] = v[r][c];
+			}
+			q[r][knum - 1] = 1.0 / sqrt(double(a2.size()));
+		}
+		Matrix C = q * q.transpose();
+		Matrix P = Matrix(C.row(), C.column());
+		for (int r = 0; r < C.row(); r++) {
+			for (int c = 0; c < C.column(); c++) {
+				if (r == c) {
+					P[r][c] = 1;
+				} else if (C[r][c] < 0.0) {
+					P[r][c] = 0;
+				} else if (C[r][c] / (sqrt(C[r][r]) * sqrt(C[c][c])) >= 0.5) {
+					P[r][c] = 1;
+				} else {
+					P[r][c] = 0;
+				}
+			}
+		}
+		for (int r = 0; r < P.row(); r++) {
+			for (int c = 0; c < P.column(); c++) {
+				if (P[r][c] <= 0.1) {
+					printf(" ");
+				} else {
+					printf("X");
+				}
+			}
+			printf("\n");
+		}
+		fprintf(stderr, "Output the matrix with stdout ends, ");
+		if (i == 1 - 1) {
+			fprintf(stderr, "all the loops ends.\n");
+		} else {
+			fprintf(stderr, "now turn to the next loop.\n");
+		}
 	}
 }
 
 int main() {
-	/*
+	/*****************test start*******************
+	double test[4][4] = {
+		0.685694,        -0.0392685,      1.27368,     0.516904,        
+		-0.0392685,      0.188004,        -0.321713,       -0.117981,       
+		1.27368,     -0.321713,       3.11318,     1.29639,     
+		0.516904,        -0.117981,       1.29639,     0.582414        
+	};
 	Matrix aa = Matrix(4, 4);
 	for (int i = 0; i < 4; i++) {
 		for (int j = 0; j < 4; j++) {
@@ -112,7 +148,7 @@ int main() {
 	aa.svn(S, U, V);
 	out(aa), out(S), out(U), out(V);
 	return 0;
-	*/
+	*******************test end******************/
 	srand(time(NULL));
 	FILE * _1000words;
 	_1000words = fopen("1000words.txt", "r");
@@ -129,12 +165,12 @@ int main() {
 	}
 	fclose(_1000words);
 
-	gao(A2, BALANCE2, 2);
-	gao(B2, BALANCE2, 2);
-	gao(A5, BALANCE5, 5);
-	gao(A5, UNBALANCE5, 5);
-	gao(B5, BALANCE5, 5);
-	gao(B5, UNBALANCE5, 5);
+	printf("A2:\n"); gao(A2, BALANCE2, 2); printf("\n");
+	printf("B2:\n"); gao(B2, BALANCE2, 2); printf("\n");
+	printf("A5 Balance:\n"); gao(A5, BALANCE5, 5); printf("\n");
+	printf("A5 Unbalance\n"); gao(A5, UNBALANCE5, 5); printf("\n");
+	printf("B5 Balance:\n"); gao(B5, BALANCE5, 5); printf("\n");
+	printf("B5 Unbalance\n"); gao(B5, UNBALANCE5, 5); printf("\n");
 
 	return 0;
 }

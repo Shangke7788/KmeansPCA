@@ -5,6 +5,8 @@
 extern "C" {
 #endif
 
+const int CNT = 10;
+
 const char DICNAME[21][50] = {
 	"..\\20_newsgroups",
 	"..\\20_newsgroups\\alt.atheism",

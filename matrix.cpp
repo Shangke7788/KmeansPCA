@@ -409,34 +409,16 @@ Matrix Matrix::center() const {
 }
 
 Matrix Matrix::cov() const {
-	Matrix cen = this->column_center();
+	Matrix cen = *this;
 	Matrix c2 = cen.transpose();
-	Matrix ans = Matrix(this->column(), this->column());
-	int R = cen.row(), C = ans.column();
-	for (int i = 0; i < C; i++) {
-		for (int j = 0; j < C; j++) {
-			for (int k = 0; k < R; k++) {
-				ans[i][j] += c2[i][k] * cen[k][j];
-			}
-			// ans[i][j] /= R - 1;
-		}
-	}
+	Matrix ans = c2 * cen;
 	return ans;
 }
 
 Matrix Matrix::cov2() const {
-	Matrix cen = this->column_center();
+	Matrix cen = *this;
 	Matrix c2 = cen.transpose();
-	Matrix ans = Matrix(this->row(), this->row());
-	int R = cen.column(), C = ans.column();
-	for (int i = 0; i < C; i++) {
-		for (int j = 0; j < C; j++) {
-			for (int k = 0; k < R; k++) {
-				ans[i][j] += cen[i][k] * c2[k][j];
-			}
-			// ans[i][j] /= R - 1;
-		}
-	}
+	Matrix ans = cen * c2;
 	return ans;
 }
 
