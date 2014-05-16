@@ -60,17 +60,23 @@ extern "C" vector< DataPoint > get_datapoints(const char dic[][50], const int nu
 	return points;
 }
 
-extern "C" void gao(const char dic[][50], const int num[], int knum) {
+extern "C" void gao(const char dic[][50], const int num[], int knum, const char filename[]) {
 	Kmeans K;
+	string F = filename;
+	string fname = "result\\" + F + ".txt";
+	string picname = "result\\" + F + "\\";
+	FILE *ftxt, *fpic;
+	ftxt = fopen(fname.c_str(), "w");
+	fprintf(stderr, "%s:\n", filename);
 	//for (int i = 0; i < CNT; i++) {
 	for (int i = 0; i < 1; i++) {
 		fprintf(stderr, "Now selecting and read files... This will take about 1 minute.\n");
 		vector< DataPoint > a2 = get_datapoints(dic, num, knum);
 		fprintf(stderr, "Read files ends, start K-means... This will take about 5 seconds.\n");
 		K.K_Means(a2, knum, 20);
-		printf("Case #%d:\n", i + 1);
+		fprintf(ftxt, "Case #%d:\n", i + 1);
 		fprintf(stderr, "Case #%d:\n", i + 1);
-		printf("Km = %.9lf\n", K.JK);
+		fprintf(ftxt, "Km = %.9lf\n", K.JK);
 		fprintf(stderr, "Km = %.9lf\n", K.JK);
 		fprintf(stderr, "K-means ends, start svd... This will take about 1 second or 2 minutes.\n");
 		Matrix m2 = DataPoint::get_matrix(a2);
@@ -87,8 +93,8 @@ extern "C" void gao(const char dic[][50], const int num[], int knum) {
 		for (int j = 0; j < knum - 1; j++) {
 			y -= s[j][j];
 		}
-		printf("P2 = %.9lf\n", y);
-		fprintf(stderr, "P2 = %.9lf\n", y);
+		fprintf(ftxt, "P%d = %.9lf\n", knum, y);
+		fprintf(stderr, "P%d = %.9lf\n", knum, y);
 		fprintf(stderr, "Now svd ends, start output the matrix with stdout.\n");
 		Matrix q = Matrix((int)a2.size(), knum);
 		for (int r = 0; r < q.row(); r++) {
@@ -101,27 +107,21 @@ extern "C" void gao(const char dic[][50], const int num[], int knum) {
 		Matrix P = Matrix(C.row(), C.column());
 		for (int r = 0; r < C.row(); r++) {
 			for (int c = 0; c < C.column(); c++) {
-				if (r == c) {
-					P[r][c] = 1;
-				} else if (C[r][c] < 0.0) {
+				if (C[r][c] < 0) {
 					P[r][c] = 0;
-				} else if (C[r][c] / (sqrt(C[r][r]) * sqrt(C[c][c])) >= 0.5) {
-					P[r][c] = 1;
 				} else {
-					P[r][c] = 0;
+					P[r][c] = C[r][c] / (sqrt(C[r][r]) * sqrt(C[c][c]));
 				}
 			}
 		}
+		sprintf(buffers, "%s%d.txt", picname.c_str(), i + 1);
+		fpic = fopen(buffers, "w");
 		for (int r = 0; r < P.row(); r++) {
 			for (int c = 0; c < P.column(); c++) {
-				if (P[r][c] <= 0.1) {
-					printf(" ");
-				} else {
-					printf("X");
-				}
+				fprintf(fpic, "%.9lf%c", P[r][c], " \n"[c == P.column() - 1]);
 			}
-			printf("\n");
 		}
+		fclose(fpic);
 		fprintf(stderr, "Output the matrix with stdout ends, ");
 		if (i == 1 - 1) {
 			fprintf(stderr, "all the loops ends.\n");
@@ -129,27 +129,11 @@ extern "C" void gao(const char dic[][50], const int num[], int knum) {
 			fprintf(stderr, "now turn to the next loop.\n");
 		}
 	}
+	fclose(ftxt);
+	fprintf(stderr, "\n");
 }
 
 int main() {
-	/*****************test start*******************
-	double test[4][4] = {
-		0.685694,        -0.0392685,      1.27368,     0.516904,        
-		-0.0392685,      0.188004,        -0.321713,       -0.117981,       
-		1.27368,     -0.321713,       3.11318,     1.29639,     
-		0.516904,        -0.117981,       1.29639,     0.582414        
-	};
-	Matrix aa = Matrix(4, 4);
-	for (int i = 0; i < 4; i++) {
-		for (int j = 0; j < 4; j++) {
-			aa[i][j] = test[i][j];
-		}
-	}
-	Matrix U, S, V;
-	aa.svn(S, U, V);
-	out(aa), out(S), out(U), out(V);
-	return 0;
-	*******************test end******************/
 	srand(time(NULL));
 	FILE * _1000words;
 	_1000words = fopen("1000words.txt", "r");
@@ -166,12 +150,12 @@ int main() {
 	}
 	fclose(_1000words);
 
-	printf("A2:\n"); gao(A2, BALANCE2, 2); printf("\n");
-	printf("B2:\n"); gao(B2, BALANCE2, 2); printf("\n");
-	printf("A5 Balance:\n"); gao(A5, BALANCE5, 5); printf("\n");
-	printf("A5 Unbalance\n"); gao(A5, UNBALANCE5, 5); printf("\n");
-	printf("B5 Balance:\n"); gao(B5, BALANCE5, 5); printf("\n");
-	printf("B5 Unbalance\n"); gao(B5, UNBALANCE5, 5); printf("\n");
+	gao(A2, BALANCE2, 2, "A2");
+	gao(B2, BALANCE2, 2, "B2");
+	gao(A5, BALANCE5, 5, "A5_Balance");
+	gao(A5, UNBALANCE5, 5, "A5_Unbalance");
+	gao(B5, BALANCE5, 5, "B5_Balance");
+	gao(B5, UNBALANCE5, 5, "B5_Unbalance");
 
 	return 0;
 }
