@@ -248,7 +248,7 @@ void get_1000_words() {
 		if (strlen(s) <= 3) {
 			continue;
 		}
-		if (mp[allstring[i].second] >= 2500) {
+		if (mp[allstring[i].second] >= 3000) {
 			continue;
 		}
 		fprintf(_1000words, "%-20s %.9lf %d\n", s, log((double)fs.size() / (double)mp[allstring[i].second]), mp[allstring[i].second]);
