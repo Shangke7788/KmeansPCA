@@ -61,6 +61,9 @@ class DataPoint: public vector<double> {
 		// 返回两个元素之间的欧式距离
 		double dis(const DataPoint & o) const;
 
+		// 返回两个元素之间的欧式距离的平方
+		double dis2(const DataPoint & o) const;
+
 		// 归1化
 		void normalize();
 

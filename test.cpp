@@ -83,6 +83,7 @@ extern "C" void gao(const char dic[][50], const int num[], int knum) {
 		m2 = m2.cov2();
 		Matrix u, s, v;
 		m2.svn(s, u, v);
+		fprintf(stderr, "ny^2 = %.9lf\n", y);
 		for (int j = 0; j < knum - 1; j++) {
 			y -= s[j][j];
 		}

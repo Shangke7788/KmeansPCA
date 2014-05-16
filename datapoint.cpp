@@ -158,6 +158,15 @@ double DataPoint::dis(const DataPoint& o) const {
 	return (double)sqrt(ans);
 }
 
+double DataPoint::dis2(const DataPoint& o) const {
+	int D = this->dim();
+	double ans = 0.0;
+	for (int i = 0; i < D; i++) {
+		ans += ((*this)[i] - o[i]) * ((*this)[i] - o[i]);
+	}
+	return (double)ans;
+}
+
 void DataPoint::normalize() {
 	double f = form2();
 	int n = this->size();

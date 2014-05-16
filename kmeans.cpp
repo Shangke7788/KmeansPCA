@@ -17,7 +17,7 @@ int Kmeans::getLable(vector< DataPoint > &means, DataPoint &point) {
 	double minDis = INF;
 	int res = -1;
 	for (int i = 0; i < kSize; i++) {
-		double tmp = means[i].dis(point);
+		double tmp = means[i].dis2(point);
 		if (minDis > tmp) {
 			minDis = tmp, res = i;
 		}
@@ -30,7 +30,7 @@ double Kmeans::getVal(vector< DataPoint > &means, vector< DataPoint > cluster[])
 	double res = 0.0;
 	for (int i = 0; i < kSize; i++) {
 		for (int j = 0; j < (int)cluster[i].size(); j++) {
-			res += means[i].dis(cluster[i][j]);
+			res += means[i].dis2(cluster[i][j]);
 		}
 	}
 	return res;
