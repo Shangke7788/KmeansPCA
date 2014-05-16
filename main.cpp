@@ -68,8 +68,7 @@ extern "C" void gao(const char dic[][50], const int num[], int knum, const char 
 	FILE *ftxt, *fpic;
 	ftxt = fopen(fname.c_str(), "w");
 	fprintf(stderr, "%s:\n", filename);
-	//for (int i = 0; i < CNT; i++) {
-	for (int i = 0; i < 1; i++) {
+	for (int i = 0; i < CNT; i++) {
 		fprintf(stderr, "Now selecting and read files... This will take about 1 minute.\n");
 		vector< DataPoint > a2 = get_datapoints(dic, num, knum);
 		fprintf(stderr, "Read files ends, start K-means... This will take about 5 seconds.\n");
@@ -123,7 +122,7 @@ extern "C" void gao(const char dic[][50], const int num[], int knum, const char 
 		}
 		fclose(fpic);
 		fprintf(stderr, "Output the matrix with stdout ends, ");
-		if (i == 1 - 1) {
+		if (i == CNT - 1) {
 			fprintf(stderr, "all the loops ends.\n");
 		} else {
 			fprintf(stderr, "now turn to the next loop.\n");

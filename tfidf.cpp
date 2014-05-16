@@ -33,7 +33,7 @@ int kmp(char* s, char* cmp) {
 	}
 	int i = 0, j = 0, res = 0;
 	while (s[i]) {
-		if (j == -1 || s[i] == cmp[j]) {
+		if (j == -1 || s[i] == cmp[j] /*|| s[i] - 'A' + 'a' == cmp[j]*/) {
 			++i, ++j;
 			if (!cmp[j]) {
 				res++;
@@ -46,12 +46,48 @@ int kmp(char* s, char* cmp) {
 	return res;
 }
 
+int word_num(char* s, char* cmp) {
+	char *ss = s;
+	while (*s) {
+		if (*s >= 'A' && *s <= 'Z') {
+			*s = *s - 'A' + 'a';
+		}
+		s++;
+	}
+	s = ss;
+	int res = 0;
+	while (*s) {
+		if (*s >= 'a' && *s <= 'z') {
+			ss = cmp;
+			while (*s == *ss) {
+				ss++;
+				s++;
+			}
+			if (*s >= 'a' && *s <= 'z') {
+				while (*s >= 'a' && *s <= 'z') {
+					s++;
+				}
+				s++;
+			} else if (*ss == 0) {
+				res++;
+				s++;
+			} else {
+				s++;
+			}
+		} else {
+			s++;
+		}
+	}
+	return res;
+}
+
 int document_word_num(const char* filename, char* word) {
 	static char s[1 << 10];
 	FILE * f;
 	f = fopen(filename, "r");
 	int num = 0;
 	while (fscanf(f, "%s", s) != EOF) {
+		//num += word_num(s, word);
 		num += kmp(s, word);
 	}
 	fclose(f);
@@ -212,7 +248,7 @@ void get_1000_words() {
 		if (strlen(s) <= 3) {
 			continue;
 		}
-		if (mp[allstring[i].second] >= 5000) {
+		if (mp[allstring[i].second] >= 2500) {
 			continue;
 		}
 		fprintf(_1000words, "%-20s %.9lf %d\n", s, log((double)fs.size() / (double)mp[allstring[i].second]), mp[allstring[i].second]);

@@ -11,6 +11,8 @@ using namespace std;
 
 int kmp(char* s, char* cmp);
 
+int word_num(char* s, char* cmp);
+
 int document_word_num(const char* filename, char* word);
 
 void insert_words(Trie* root, const char* filename);
