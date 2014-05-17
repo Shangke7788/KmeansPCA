@@ -62,7 +62,23 @@ extern "C" vector< DataPoint > get_datapoints(const char dic[][50], const int nu
 
 extern "C" void gao(const char dic[][50], const int num[], int knum, const char filename[]) {
 	Kmeans K;
-	string F = filename;
+	string F = filename, fout;
+	FILE * _1000words;
+	fout = "1000words_" + F + ".txt";
+	_1000words = fopen(fout.c_str(), "r");
+	if (_1000words == NULL) {
+		get_1000_words(dic, knum, filename);
+		_1000words = fopen(fout.c_str(), "r");
+	}
+	words.clear();
+	double idf_val;
+	int idf_num;
+	while (fscanf(_1000words, "%s%lf%d", buffers, &idf_val, &idf_num) != EOF) {
+		string tmp = buffers;
+		words[tmp] = idf_val;
+	}
+	fclose(_1000words);
+
 	string fname = "result\\" + F + ".txt";
 	string picname = "result\\" + F + "\\";
 	FILE *ftxt, *fpic;
@@ -134,20 +150,6 @@ extern "C" void gao(const char dic[][50], const int num[], int knum, const char 
 
 int main() {
 	srand(time(NULL));
-	FILE * _1000words;
-	_1000words = fopen("1000words.txt", "r");
-	if (_1000words == NULL) {
-		get_1000_words();
-		_1000words = fopen("1000words.txt", "r");
-	}
-	words.clear();
-	double idf_val;
-	int idf_num;
-	while (fscanf(_1000words, "%s%lf%d", buffers, &idf_val, &idf_num) != EOF) {
-		string tmp = buffers;
-		words[tmp] = idf_val;
-	}
-	fclose(_1000words);
 
 	gao(A2, BALANCE2, 2, "A2");
 	gao(B2, BALANCE2, 2, "B2");

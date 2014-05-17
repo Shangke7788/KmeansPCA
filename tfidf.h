@@ -19,9 +19,9 @@ void insert_words(Trie* root, const char* filename);
 
 Trie* get_words(const char* filename);
 
-void get_tfidf_files();
+void get_tfidf_files(const char dic[][50], int n, const char* filename);
 
-void get_1000_words();
+void get_1000_words(const char dic[][50], int n, const char* filename);
 
 #ifdef __cplusplus
 }
