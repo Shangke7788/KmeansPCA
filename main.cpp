@@ -85,7 +85,7 @@ extern "C" void gao(const char dic[][50], const int num[], int knum, const char 
 	ftxt = fopen(fname.c_str(), "w");
 	fprintf(stderr, "%s:\n", filename);
 	for (int i = 0; i < CNT; i++) {
-		fprintf(stderr, "Now selecting and read files... This will take about 1 minute.\n");
+		fprintf(stderr, "Now selecting and read files... This will take about 1 to 3 minute.\n");
 		vector< DataPoint > a2 = get_datapoints(dic, num, knum);
 		fprintf(stderr, "Read files ends, start K-means... This will take about 5 seconds.\n");
 		K.K_Means(a2, knum, 20);
